@@ -27,17 +27,30 @@ console.log("🌍 NODE_ENV:", process.env.NODE_ENV);
 // ✅ CORS Configuration
 app.use(
   cors({
-    origin: [
-      "http://localhost:3000",
-      "http://localhost:5173",
-      "http://localhost:5174",
-      "http://localhost:5175",
-      "https://dot-decimals.vercel.app",
-      "https://*.vercel.app",
-      "https://*.onrender.com",
-      "https://dot-decimals-1.onrender.com",
-      "https://dot-decimals-admin.onrender.com",
-    ],
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like curl, Postman)
+      if (!origin) return callback(null, true);
+
+      const allowedOrigins = new Set([
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "http://localhost:5174",
+        "http://localhost:5175",
+        "https://dot-decimals.vercel.app",
+        "https://dot-decimals-1.onrender.com",
+        "https://dot-decimals-admin.onrender.com",
+      ]);
+
+      // Allow any vercel.app subdomain and any onrender.com subdomain
+      const isVercel = /(^https?:\/\/[^\/]+\.vercel\.app$)/i.test(origin);
+      const isOnrender = /(^https?:\/\/[^\/]+\.onrender\.com$)/i.test(origin);
+
+      if (allowedOrigins.has(origin) || isVercel || isOnrender) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],

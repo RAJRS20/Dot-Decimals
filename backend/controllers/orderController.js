@@ -4,8 +4,8 @@ import { Order } from "../models/orderModel.js";
 import { User } from "../models/userModel.js";
 import crypto from "crypto";
 
-const RAZORPAY_KEY_ID = "rzp_test_RSbu0tJAtXmrqF";
-const RAZORPAY_KEY_SECRET = "3kU9cFOLgIFou22QyNcKUQb7";
+const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID || "rzp_test_RSbu0tJAtXmrqF";
+const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || "3kU9cFOLgIFou22QyNcKUQb7";
 
 const razorpay = new Razorpay({
   key_id: RAZORPAY_KEY_ID,
