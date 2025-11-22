@@ -37,6 +37,7 @@ app.use(
         "http://localhost:5174",
         "http://localhost:5175",
         "https://dot-decimals.vercel.app",
+        "https://dot-decimals-henna.vercel.app",
         "https://dot-decimals-1.onrender.com",
         "https://dot-decimals-admin.onrender.com",
       ]);
