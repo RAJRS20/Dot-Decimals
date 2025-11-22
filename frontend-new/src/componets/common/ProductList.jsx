@@ -35,8 +35,65 @@ const ProductList = () => {
                 }));
                 setProducts(formattedProducts);
             }
+            else {
+                // If API returned no products, fall back to local list
+                const localFallback = [
+                    {
+                        id: "local-1",
+                        name: "Kaspersky Plus",
+                        image: Kaspersky_plus,
+                        description: "Reliable antivirus protection",
+                        detailContent: "Full features of Kaspersky Plus.",
+                        price: 499,
+                    },
+                    {
+                        id: "local-2",
+                        name: "Dot-Decimals Firewall",
+                        image: Kaspersky_plus,
+                        description: "Advanced firewall for networks",
+                        detailContent: "Protect your network with Dot-Decimals Firewall.",
+                        price: 1299,
+                    },
+                ];
+                setProducts(localFallback);
+            }
         } catch (error) {
             console.error("Error fetching products:", error);
+            // Show user a friendly toast and use a local fallback so the page is usable
+            try {
+                toast.error("Could not load products from server — showing local products.");
+            } catch (e) {
+                // ignore if Toaster not initialized
+            }
+
+            const fallbackProducts = [
+                {
+                    id: "local-1",
+                    name: "Kaspersky Plus",
+                    image: Kaspersky_plus,
+                    description: "Reliable antivirus protection",
+                    detailContent: "Full features of Kaspersky Plus.",
+                    price: 499,
+                },
+                {
+                    id: "local-2",
+                    name: "Dot-Decimals Firewall",
+                    image: Kaspersky_plus,
+                    description: "Advanced firewall for networks",
+                    detailContent: "Protect your network with Dot-Decimals Firewall.",
+                    price: 1299,
+                },
+                {
+                    id: "local-3",
+                    name: "Enterprise VPN",
+                    image: Kaspersky_plus,
+                    description: "Secure remote access for teams",
+                    detailContent: "Enterprise-grade VPN with unlimited users.",
+                    price: 2999,
+                },
+            ];
+
+            setProducts(fallbackProducts);
         } finally {
             setLoading(false);
         }
