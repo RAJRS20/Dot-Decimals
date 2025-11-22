@@ -18,9 +18,20 @@ const ProductDetail = () => {
     try {
       const res = await API.get(`/products/${id}`);
       if (res.data) {
+        const resolveImage = (image) => {
+          if (!image) return Kaspersky_plus;
+          if (typeof image === "string") {
+            if (image.startsWith("http")) return image;
+            const base = (API.defaults && API.defaults.baseURL) ? API.defaults.baseURL.replace(/\/$/, "") : "";
+            if (image.startsWith("/")) return `${base}${image}`;
+            return `${base}/${image}`;
+          }
+          return Kaspersky_plus;
+        };
+
         setProduct({
           ...res.data,
-          image: res.data.image || Kaspersky_plus,
+          image: resolveImage(res.data.image),
         });
       }
     } catch (error) {
@@ -103,6 +114,7 @@ const ProductDetail = () => {
           <img
             src={product.image}
             alt={product.name}
+            onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = Kaspersky_plus; }}
             className="rounded-xl w-full max-w-sm sm:max-w-md object-contain hover:scale-105 transition-transform duration-300"
           />
         </div>

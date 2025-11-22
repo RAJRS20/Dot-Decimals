@@ -25,14 +25,29 @@ const ProductList = () => {
             const res = await API.get("/products");
 
             if (res.data && res.data.length > 0) {
-                const formattedProducts = res.data.map((product) => ({
-                    id: product._id,
-                    name: product.name,
-                    image: product.image || Kaspersky_plus,
-                    description: product.description,
-                    detailContent: product.description,
-                    price: product.price,
-                }));
+                const formattedProducts = res.data.map((product) => {
+                    const img = product.image;
+                    // Resolve image URL: use absolute if starts with http, otherwise prefix API baseURL
+                    const resolveImage = (image) => {
+                        if (!image) return Kaspersky_plus;
+                        if (typeof image === "string") {
+                            if (image.startsWith("http")) return image;
+                            const base = (API.defaults && API.defaults.baseURL) ? API.defaults.baseURL.replace(/\/$/, "") : "";
+                            if (image.startsWith("/")) return `${base}${image}`;
+                            return `${base}/${image}`;
+                        }
+                        return Kaspersky_plus;
+                    };
+
+                    return {
+                        id: product._id,
+                        name: product.name,
+                        image: resolveImage(img),
+                        description: product.description,
+                        detailContent: product.description,
+                        price: product.price,
+                    };
+                });
                 setProducts(formattedProducts);
             }
             else {
@@ -152,6 +167,7 @@ const ProductList = () => {
                                             <img
                                                 src={product.image}
                                                 alt={product.name}
+                                                onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = Kaspersky_plus; }}
                                                 className="w-32 h-32 object-contain transition duration-300 hover:scale-105"
                                             />
                                         </div>
